@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Health Status</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+</head>
+
+<body onload="loadHealthStatus()">
+
+<header>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a href="#" class="navbar-brand d-flex align-items-center">
+                <strong>Health Status</strong>
+            </a>
+        </div>
+    </div>
+</header>
+
+<main role="main">
+
+    <div class="jumbotron">
+        <div class="container" >
+            <div id="health-status-body">
+
+            </div>
+            <p>
+                <button class="btn btn-primary btn-lg" onclick="loadHealthStatus()">
+                    <span class="glyphicon glyphicon-refresh">Refresh</span>
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                        <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                    </svg>
+                </button>
+            </p>
+        </div>
+    </div>
+
+</main>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"></script>
+<script>
+    const loadHealthStatus = async () => {
+        const healthStatusDiv = document.getElementById('health-status-body')
+        const response = await fetch("/health/status");
+        const healthStatuses = await response.json();
+        healthStatusDiv.innerHTML=""
+        console.log(healthStatuses)
+        for (var i = 0; i < healthStatuses.length; i++) {
+            const healthStatus = healthStatuses[i]
+            const name = healthStatus.name
+            const status = healthStatus.state
+            const card= document.createElement("div")
+            card.className += "card alert"
+            if (status == "UP"){
+                card.className+=" alert-success"
+            }else if (status == "DOWN") {
+                card.className+=" alert-danger"
+            }else if (status == "UNKNOWN") {
+                card.className+=" alert-dark"
+            }
+            card.style.cssText = "width: 18rem;"
+            const cardBody = document.createElement("div")
+            cardBody.className = "card-body"
+            cardBody.innerHTML = "<h5 class=\"card-title\">"+ name +"</h5>"
+            card.appendChild(cardBody)
+            healthStatusDiv.appendChild(card)
+        }
+    }
+</script>
+</body>
+</html>
